@@ -4,6 +4,8 @@
 namespace Espo\ApiClient;
 
 use CurlHandle;
+use Espo\ApiClient\Exception\Error;
+use Espo\ApiClient\Exception\ResponseError;
 use InvalidArgumentException;
 use JsonException;
 use RuntimeException;
@@ -71,15 +73,16 @@ class Client
      * @param string $path A relative URL path. E.g. `Account/00000000000id`.
      * @param array<int, mixed>|array<string, mixed>|stdClass|null $data Payload data.
      * @param Header[] $headers Headers.
-     * @return stdClass|array<int, mixed>|string
-     * @throws Exception
+     * @return Response A response (on success).
+     * @throws Error
+     * @throws ResponseError On error occurred on request.
      */
     public function request(
         string $method,
         string $path,
         mixed $data = null,
         array $headers = []
-    ): stdClass|array|string {
+    ): Response {
 
         $method = strtoupper($method);
         $this->lastCh = null;
@@ -121,7 +124,7 @@ class Client
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($ch, CURLOPT_HEADER, true);
-        
+
         if ($this->port !== null) {
             curl_setopt($ch, CURLOPT_PORT, $this->port);
         }
@@ -194,7 +197,7 @@ class Client
         $lastResponse = curl_exec($ch);
 
         if ($lastResponse === false) {
-            throw new Exception('CURL exec failure.', 0);
+            throw new Error('CURL exec failure.', 0);
         }
 
         $this->lastCh = $ch;
@@ -203,31 +206,33 @@ class Client
         $responseCode = $this->getResponseHttpCode();
         $responseContentType = $this->getResponseContentType();
 
+        $response = new Response(
+            $responseCode ?? 0,
+            $responseContentType,
+            $parsedResponse['header'],
+            $parsedResponse['body'],
+        );
+
         curl_close($ch);
 
         if (
-            ($responseCode !== null && $responseCode >= 200 && $responseCode < 300) &&
-            !empty($parsedResponse['body'])
+            $responseCode !== null &&
+            $responseCode >= 200 &&
+            $responseCode < 300
         ) {
-            if ($responseContentType === 'application/json') {
-                return json_decode($parsedResponse['body']);
-            }
-
-            return $parsedResponse['body'];
+            return $response;
         }
 
         $responseHeaders = $this->normalizeHeader($parsedResponse['header']);
+        $errorMessage = $responseHeaders['X-Status-Reason'] ?? '';
 
-        $errorMessage = $responseHeaders['X-Status-Reason'] ?? 'Unknown Error';
-
-        throw (new Exception($errorMessage, $responseCode ?? 0))
-            ->withBody($parsedResponse['body']);
+        throw new ResponseError($response, $errorMessage, $responseCode ?? 0);
     }
 
     /**
      * Get a response content type.
      */
-    public function getResponseContentType(): ?string
+    private function getResponseContentType(): ?string
     {
         return $this->getInfo(CURLINFO_CONTENT_TYPE);
     }
@@ -235,7 +240,7 @@ class Client
     /**
      * Get a response total time.
      */
-    public function getResponseTotalTime(): ?int
+    private function getResponseTotalTime(): ?int
     {
         return $this->getInfo(CURLINFO_TOTAL_TIME);
     }
@@ -243,7 +248,7 @@ class Client
     /**
      * Get a response code.
      */
-    public function getResponseHttpCode(): ?int
+    private function getResponseHttpCode(): ?int
     {
         return $this->getInfo(CURLINFO_HTTP_CODE);
     }
