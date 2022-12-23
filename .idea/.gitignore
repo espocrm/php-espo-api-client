@@ -1,0 +1,5 @@
+*
+!.gitignore
+!codeStyles/*
+!fileTemplates/*
+!inspectionProfiles/*

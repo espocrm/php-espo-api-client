@@ -1,0 +1,24 @@
+{
+    "name": "espocrm/espo-api-client",
+    "description": "API client for EspoCRM.",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Espo\\ApiClient\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "EspoCRM"
+        }
+    ],
+    "require": {
+        "php": ">=8.0.0",
+        "ext-curl": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5",
+        "phpstan/phpstan": "^1.9"
+    }
+}
