@@ -36,6 +36,6 @@ catch (ResponseError $e) {
     $response = $e->getResponse();    
     
     $code = $response->getCode();
-    $body = $response->getBody();
+    $body = $response->getBodyPart();
 }
 ```
