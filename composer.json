@@ -1,5 +1,5 @@
 {
-    "name": "espocrm/espo-api-client",
+    "name": "espocrm/php-espo-api-client",
     "description": "API client for EspoCRM.",
     "type": "library",
     "license": "MIT",
