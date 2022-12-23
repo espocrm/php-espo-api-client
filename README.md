@@ -8,7 +8,7 @@ composer require espocrm/php-espo-api-client
 
 Usage:
 
-```
+```php
 use Espo\ApiClient\Client;
 use Espo\ApiClient\Header;
 use Espo\ApiClient\Exception\ResponseError;
@@ -26,9 +26,7 @@ try {
             'lastName' => $lastName,
             'emailAddress' => $emailAddress,
         ],
-        [
-            new Header('X-Skip-Duplicate-Check', 'true')   
-        ]
+        [new Header('X-Skip-Duplicate-Check', 'true')]
     );
     
     $parsedBody = $response->getParsedBody();
