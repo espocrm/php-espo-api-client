@@ -223,8 +223,8 @@ class Client
             return $response;
         }
 
-        $responseHeaders = $this->normalizeHeader($parsedResponse['header']);
-        $errorMessage = $responseHeaders['X-Status-Reason'] ?? '';
+        $responseHeaders = $this->parseHeader($parsedResponse['header']);
+        $errorMessage = $responseHeaders['x-status-reason'] ?? '';
 
         throw new ResponseError($response, $errorMessage, $responseCode ?? 0);
     }
@@ -297,7 +297,7 @@ class Client
     /**
      * @return string[]
      */
-    private function normalizeHeader(string $header): array
+    private function parseHeader(string $header): array
     {
         preg_match_all('/(.*?): (.*)\r\n/', $header, $matches);
 
@@ -305,7 +305,7 @@ class Client
 
         foreach ($matches[1] as $index => $name) {
             if (isset($matches[2][$index])) {
-                $headerArray[$name] = trim($matches[2][$index]);
+                $headerArray[strtolower($name)] = trim($matches[2][$index]);
             }
         }
 
