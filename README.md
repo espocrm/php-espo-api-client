@@ -37,5 +37,7 @@ catch (ResponseError $e) {
     
     $code = $response->getCode();
     $body = $response->getBodyPart();
+
+    // Consider using some additional library if you need parsed response headers.
 }
 ```
