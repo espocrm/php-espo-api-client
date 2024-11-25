@@ -238,14 +238,6 @@ class Client
     }
 
     /**
-     * Get a response total time.
-     */
-    private function getResponseTotalTime(): ?int
-    {
-        return $this->getInfo(CURLINFO_TOTAL_TIME);
-    }
-
-    /**
      * Get a response code.
      */
     private function getResponseHttpCode(): ?int
