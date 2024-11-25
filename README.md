@@ -30,8 +30,7 @@ try {
     );
     
     $parsedBody = $response->getParsedBody();
-}
-catch (ResponseError $e) {
+} catch (ResponseError $e) {
     // Error response.
     $response = $e->getResponse();    
     
