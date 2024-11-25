@@ -102,8 +102,7 @@ class Client
             $this->secretKey
         ) {
             $string = $method . ' /' . $path;
-            $authPart = base64_encode($this->apiKey . ':' .
-                hash_hmac('sha256', $string, $this->secretKey, true));
+            $authPart = base64_encode($this->apiKey . ':' . hash_hmac('sha256', $string, $this->secretKey));
             $authHeader = 'X-Hmac-Authorization: ' .  $authPart;
 
             $curlHeaderList[] = $authHeader;
