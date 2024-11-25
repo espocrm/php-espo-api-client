@@ -6,7 +6,7 @@ Require with Composer:
 composer require espocrm/php-espo-api-client
 ```
 
-Usage:
+## Usage
 
 ```php
 use Espo\ApiClient\Client;
@@ -40,3 +40,9 @@ try {
     // Consider using some additional library if you need parsed response headers.
 }
 ```
+
+## Changelog
+
+### 1.0.0
+
+* Using new method for constructing *X-Hmac-Authorization* header https://github.com/espocrm/php-espo-api-client/issues/2
