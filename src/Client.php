@@ -212,8 +212,6 @@ class Client
             $parsedResponse['body'],
         );
 
-        curl_close($ch);
-
         if (
             $responseCode !== null &&
             $responseCode >= 200 &&
